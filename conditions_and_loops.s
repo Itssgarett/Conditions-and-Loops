@@ -1,12 +1,13 @@
 .syntax unified
-.thumb
 .global main
+.func main
+.thumb_func
 
 .data
 .balign 4
 
-v1:     .word 50
-v2:     .word 15
+a:      .word 48
+b:      .word 18
 delay:  .word 1000
 
 msg_a:  .asciz "a is %d\n"
@@ -23,28 +24,29 @@ loop:
     ldr r0, [r0]
     bl sleep_ms
 
+    ldr r4, =a
     ldr r4, [r4]
 
-    ldr r5, =v2
+    ldr r5, =b
     ldr r5, [r5]
 
     mov r6, r4
-    mov r7, r5      
+    mov r7, r5
 
-gcd:
+gcd_loop:
     cmp r4, r5
-    beq print
+    beq done
 
-    bgt greater
+    bgt a_greater
 
     subs r5, r5, r4
-    b gcd
+    b gcd_loop
 
-greater:
+a_greater:
     subs r4, r4, r5
-    b gcd
+    b gcd_loop
 
-print:
+done:
 
     ldr r0, =msg_a
     mov r1, r6
